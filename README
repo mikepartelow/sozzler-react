@@ -1,3 +1,3 @@
 docker build -f Dockerfile -t react .
 
-docker run -p3000:3000 -v`pwd`/src:/my-app/src -ti react
+docker run --rm --name sozzler -p3000:3000 -v`pwd`/src:/my-app/src -ti react

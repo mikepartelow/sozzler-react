@@ -107,12 +107,60 @@ class FilteredRecipeList extends React.Component {
   }
 }
 
-function MenuBar(props) {
-  return (
-    <div>
-      Menu Menu
-    </div>
-  )
+class Ingredient extends React.Component {
+  render() {
+    return (
+      <li className="ingredient">
+        <div className="name">
+          {this.props.ingredient}
+        </div>
+        <div className="recipes">
+          this recipe, that recipe, other recipe
+        </div>
+      </li>
+    );
+  }
+}
+
+class IngredientList extends React.Component {
+  render() {
+    return (
+      <div>
+        <Helmet><title>Ingredients</title></Helmet>
+        <ul className="ingredients">
+          {this.props.ingredients.sort((a, b) => a.localeCompare(b))
+                                 .map((ingredient) => <Ingredient key={ingredient} ingredient={ingredient} />)
+          }
+        </ul>
+      </div>
+    )
+  }
+}
+
+
+class MenuBar extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleRecipes = this.handleRecipes.bind(this);
+    this.handleIngredients = this.handleIngredients.bind(this);
+  }
+
+  handleRecipes() {
+    this.props.onRecipes()
+  }
+
+  handleIngredients() {  
+    this.props.onIngredients()  
+  }
+
+  render() {
+    return (
+      <div>
+        <button onClick={this.handleRecipes}>Recipes</button> |
+        <button onClick={this.handleIngredients}>Ingredients</button>
+      </div>
+    )
+  }
 }
 
 class App extends React.Component {
@@ -120,8 +168,24 @@ class App extends React.Component {
     super(props);
     this.state = {
       selectedRecipe: null,
+      ingredientView: false,
     };
     this.handleRecipeSelected = this.handleRecipeSelected.bind(this);
+    this.handleRecipes = this.handleRecipes.bind(this);
+    this.handleIngredients = this.handleIngredients.bind(this);
+  }
+
+  handleRecipes() {
+    this.setState({
+      selectedRecipe: null,
+      ingredientView: false,
+    });
+  }
+
+  handleIngredients() {
+    this.setState({
+      ingredientView: true,
+    });
   }
 
   handleRecipeSelected(selectedRecipe) {
@@ -133,10 +197,10 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <MenuBar />
-        {this.state.selectedRecipe ? 
-          <RecipeDetails recipe={this.state.selectedRecipe} /> :
-          <FilteredRecipeList recipes={this.props.recipes} onRecipeSelected={this.handleRecipeSelected}/>}
+        <MenuBar onRecipes={this.handleRecipes} onIngredients={this.handleIngredients} />
+        {this.state.ingredientView ? <IngredientList ingredients={this.props.ingredients} />
+                                   : this.state.selectedRecipe ? <RecipeDetails recipe={this.state.selectedRecipe} /> :
+                                                                 <FilteredRecipeList recipes={this.props.recipes} onRecipeSelected={this.handleRecipeSelected} />}
       </div>
     )
   }
@@ -145,7 +209,15 @@ class App extends React.Component {
 // ========================================
 let url = 'https://raw.githubusercontent.com/mikepartelow/sozzler-recipes/master/SozzlerApp/1.0.sozzler';
 fetch(url)
-  .then(res => res.json())
-  .then(recipes => {
-    ReactDOM.render(<App recipes={recipes} />, document.getElementById('root'));
+  .then((res) => res.json())
+  .then((recipes) => {
+    var ingredients = new Set();
+    
+    recipes.map((recipe) =>
+      recipe.components.map((component) =>
+        ingredients.add(component.ingredient)
+      )
+    )
+
+    ReactDOM.render(<App recipes={recipes} ingredients={Array.from(ingredients)} />, document.getElementById('root'));
 })

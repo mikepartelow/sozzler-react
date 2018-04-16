@@ -1,5 +1,6 @@
 .recipes {
 }
+
 .recipe {
     margin-bottom: 4px;
 }
@@ -9,5 +10,20 @@
 }
 
 .recipe .ingredients {
+    padding-left: 4em;
+}
+
+.ingredients {
+}
+
+.ingredient {
+    margin-bottom: 4px;
+}
+
+.ingredient .name {
+    font-size: 140%;
+}
+
+.ingredient .recipes {
     padding-left: 4em;
 }
