@@ -1,0 +1,13 @@
+.recipes {
+}
+.recipe {
+    margin-bottom: 4px;
+}
+
+.recipe .name {
+    font-size: 140%;
+}
+
+.recipe .ingredients {
+    padding-left: 4em;
+}
