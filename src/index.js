@@ -46,7 +46,7 @@ class RecipeList extends React.Component {
   render() {
     return (
       <div>
-        <Helmet><title>Recipes</title></Helmet>
+        <Helmet><title>{this.props.ingredient ? "Recipes With " + this.props.ingredient : "Recipes"}</title></Helmet>
         <ul className="recipes">
           {this.props.recipes.sort((a, b) => b.rating - a.rating || a.name.localeCompare(b.name))
                              .filter((recipe) => recipe.name.toLowerCase().includes(this.props.filterText.toLowerCase()))
@@ -101,7 +101,7 @@ class FilteredRecipeList extends React.Component {
     return (
       <div>
         <SearchBar filterText={this.state.filterText} onFilterTextChange={this.handleFilterTextChange} />
-        <RecipeList recipes={this.props.recipes} filterText={this.state.filterText} onRecipeSelected={this.props.onRecipeSelected} />
+        <RecipeList recipes={this.props.recipes} ingredient={this.props.ingredient} filterText={this.state.filterText} onRecipeSelected={this.props.onRecipeSelected} />
       </div>
     )
   }
@@ -110,7 +110,7 @@ class FilteredRecipeList extends React.Component {
 class Ingredient extends React.Component {
   render() {
     return (
-      <li className="ingredient">
+      <li className="ingredient" onClick={() => this.props.onIngredientSelected(this.props.ingredient, this.props.recipes)}>
         <div className="name">
           {this.props.ingredient}
         </div>
@@ -129,7 +129,7 @@ class IngredientList extends React.Component {
         <Helmet><title>Ingredients</title></Helmet>
         <ul className="ingredients">
           {Array.from(this.props.ingredients).map(([k, v]) =>
-            <Ingredient key={k} ingredient={k} recipes={v} />
+            <Ingredient key={k} ingredient={k} recipes={v} onIngredientSelected={this.props.onIngredientSelected}/>
           )}
         </ul>
       </div>
@@ -166,16 +166,21 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      ingredient: null,
+      recipes: null,
       selectedRecipe: null,
       ingredientView: false,
     };
     this.handleRecipeSelected = this.handleRecipeSelected.bind(this);
     this.handleRecipes = this.handleRecipes.bind(this);
     this.handleIngredients = this.handleIngredients.bind(this);
+    this.handleIngredientSelected = this.handleIngredientSelected.bind(this);
   }
 
   handleRecipes() {
     this.setState({
+      ingredient: null,
+      recipes: null,
       selectedRecipe: null,
       ingredientView: false,
     });
@@ -193,13 +198,30 @@ class App extends React.Component {
     });
   }
 
+  handleIngredientSelected(ingredient, recipes) {
+    this.setState({
+      ingredient: ingredient,
+      recipes: recipes,
+      ingredientView: false,
+    })
+  }
+
   render() {
+    var view;
+
+    if (this.state.ingredientView) {
+      view = <IngredientList ingredients={this.props.ingredients} onIngredientSelected={this.handleIngredientSelected} />
+    } else if (this.state.selectedRecipe) {
+      view = <RecipeDetails recipe={this.state.selectedRecipe} />
+    } else {
+      console.log(this.state.recipes)
+      view = <FilteredRecipeList recipes={this.state.recipes || this.props.recipes} ingredient={this.state.ingredient} onRecipeSelected={this.handleRecipeSelected} />
+    }
+
     return (
       <div>
         <MenuBar onRecipes={this.handleRecipes} onIngredients={this.handleIngredients} />
-        {this.state.ingredientView ? <IngredientList ingredients={this.props.ingredients} />
-                                   : this.state.selectedRecipe ? <RecipeDetails recipe={this.state.selectedRecipe} /> :
-                                                                 <FilteredRecipeList recipes={this.props.recipes} onRecipeSelected={this.handleRecipeSelected} />}
+        {view}
       </div>
     )
   }
