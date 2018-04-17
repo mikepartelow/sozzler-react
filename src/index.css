@@ -27,3 +27,7 @@
 .ingredient .recipes {
     padding-left: 4em;
 }
+
+.recipe-details .text {
+  white-space: pre-line;
+}

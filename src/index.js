@@ -3,6 +3,23 @@ import ReactDOM from 'react-dom';
 import {Helmet} from "react-helmet";
 import './index.css';
 
+function fancy_quantity(quantity) {
+  let [qn, qd] = quantity.split('/')
+
+  if (qn === '0') {
+    quantity = ''
+  } else if (qd === '1') {
+    quantity = qn
+  } else {
+    let [ qni, qdi ] = [ parseInt(qn, 10), parseInt(qd, 10) ]
+    if (qni > qdi) {
+      quantity = `${Math.floor(qni/qdi)} ${qni%qdi}/${qdi}`
+    }
+  }
+
+  return quantity
+}
+
 function RecipeDetails(props) {
   return (
     <div>
@@ -12,8 +29,15 @@ function RecipeDetails(props) {
 
       <div className="recipe-details">
         <div className="name">
-          {props.recipe.name} : {props.recipe.rating}
+          <h3>{props.recipe.name} : {props.recipe.rating}</h3>
         </div>
+        {props.recipe.components.sort((c0, c1) => c0.index > c1.index).map((c) =>        
+          <div key={c.index} className="component">
+            <span className="quantity">{fancy_quantity(c.quantity)} </span>
+            <span className="unit">{c.unit} </span>
+            <span className="ingredient">{c.ingredient}</span>
+          </div>
+        )}        
         <hr />
         <div className="text">
           {props.recipe.text}
@@ -214,7 +238,6 @@ class App extends React.Component {
     } else if (this.state.selectedRecipe) {
       view = <RecipeDetails recipe={this.state.selectedRecipe} />
     } else {
-      console.log(this.state.recipes)
       view = <FilteredRecipeList recipes={this.state.recipes || this.props.recipes} ingredient={this.state.ingredient} onRecipeSelected={this.handleRecipeSelected} />
     }
 
