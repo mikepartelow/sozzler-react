@@ -1,7 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Helmet} from "react-helmet";
+// import {Helmet} from "react-helmet";
 import './index.css';
+import { List } from 'semantic-ui-react';
+import 'semantic-ui-css/semantic.min.css';
+
+function Helmet(props) {
+  return ''
+}
 
 function fancy_quantity(quantity) {
   let [qn, qd] = quantity.split('/')
@@ -47,39 +53,26 @@ function RecipeDetails(props) {
   );
 }
 
-class Recipe extends React.Component {
-  render() {
-    const ingredients = this.props.recipe.components.sort((c0, c1) => c0.index > c1.index).map((component) =>
-        component.ingredient
-    ).join(', ');
-
-    return (
-      <li className="recipe" onClick={() => this.props.onRecipeSelected(this.props.recipe)}>
-        <div className="name">
-          {this.props.recipe.name} : {this.props.recipe.rating}
-        </div>
-        <div className="ingredients">
-          {ingredients}
-        </div>
-      </li>
-    );
-  }
-}
-
-class RecipeList extends React.Component {  
-  render() {
-    return (
-      <div>
-        <Helmet><title>{this.props.ingredient ? "Recipes With " + this.props.ingredient : "Recipes"}</title></Helmet>
-        <ul className="recipes">
-          {this.props.recipes.sort((a, b) => b.rating - a.rating || a.name.localeCompare(b.name))
-                             .filter((recipe) => recipe.name.toLowerCase().includes(this.props.filterText.toLowerCase()))
-                             .map((recipe) => <Recipe key={recipe.name} recipe={recipe} onRecipeSelected={this.props.onRecipeSelected} />)
-          }
-        </ul>
-      </div>
-    );
-  }
+function RecipeList(props) {  
+  let recipes = props.recipes.sort((a, b) => b.rating - a.rating || a.name.localeCompare(b.name))
+                             .filter((recipe) => recipe.name.toLowerCase().includes(props.filterText.toLowerCase()))
+  
+  // <Helmet><title>{this.props.ingredient ? "Recipes With " + this.props.ingredient : "Recipes"}</title></Helmet>
+    
+  return (
+    <List divided relaxed>
+      {recipes.map(recipe =>
+        <List.Item key={recipe.name} onClick={() => props.onRecipeSelected(recipe)}>
+            <List.Content>
+              <List.Header>{recipe.name} : {recipe.rating}</List.Header>
+              <List.Description>
+                {recipe.components.sort((c0, c1) => c0.index > c1.index).map(c => c.ingredient).join(', ')}
+              </List.Description>
+            </List.Content>
+          </List.Item>
+      )}      
+    </List>
+  )
 }
 
 class SearchBar extends React.Component {
@@ -131,34 +124,21 @@ class FilteredRecipeList extends React.Component {
   }
 }
 
-class Ingredient extends React.Component {
-  render() {
-    return (
-      <li className="ingredient" onClick={() => this.props.onIngredientSelected(this.props.ingredient, this.props.recipes)}>
-        <div className="name">
-          {this.props.ingredient}
-        </div>
-        <div className="recipes">
-          {this.props.recipes.map(r => r.name).sort().join(', ')}
-        </div>
-      </li>
-    );
-  }
-}
-
-class IngredientList extends React.Component {
-  render() {
-    return (
-      <div>
-        <Helmet><title>Ingredients</title></Helmet>
-        <ul className="ingredients">
-          {Array.from(this.props.ingredients).map(([k, v]) =>
-            <Ingredient key={k} ingredient={k} recipes={v} onIngredientSelected={this.props.onIngredientSelected}/>
-          )}
-        </ul>
-      </div>
-    )
-  }
+function IngredientList(props) {
+  return (
+    <List divided relaxed>
+      {Array.from(props.ingredients).map(([ingredient, recipes]) => {
+        return (
+          <List.Item key={ingredient} onClick={() => props.onIngredientSelected(ingredient, recipes)}>
+            <List.Content>
+              <List.Header>{ingredient}</List.Header>
+              <List.Description>{recipes.map(r => r.name).sort().join(', ')}</List.Description>
+            </List.Content>
+          </List.Item>
+        )
+      })}
+    </List>
+  )
 }
 
 class MenuBar extends React.Component {
