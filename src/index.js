@@ -115,7 +115,7 @@ class Ingredient extends React.Component {
           {this.props.ingredient}
         </div>
         <div className="recipes">
-          this recipe, that recipe, other recipe
+          {this.props.recipes.map(r => r.name).sort().join(', ')}
         </div>
       </li>
     );
@@ -128,15 +128,14 @@ class IngredientList extends React.Component {
       <div>
         <Helmet><title>Ingredients</title></Helmet>
         <ul className="ingredients">
-          {this.props.ingredients.sort((a, b) => a.localeCompare(b))
-                                 .map((ingredient) => <Ingredient key={ingredient} ingredient={ingredient} />)
-          }
+          {Array.from(this.props.ingredients).map(([k, v]) =>
+            <Ingredient key={k} ingredient={k} recipes={v} />
+          )}
         </ul>
       </div>
     )
   }
 }
-
 
 class MenuBar extends React.Component {
   constructor(props) {
@@ -211,13 +210,16 @@ let url = 'https://raw.githubusercontent.com/mikepartelow/sozzler-recipes/master
 fetch(url)
   .then((res) => res.json())
   .then((recipes) => {
-    var ingredients = new Set();
-    
+    var ingredients = new Map();
+
     recipes.map((recipe) =>
-      recipe.components.map((component) =>
-        ingredients.add(component.ingredient)
-      )
+      recipe.components.map((component) => {
+        var ingredient_recipes = ingredients.get(component.ingredient) || [];
+        ingredient_recipes.push(recipe);
+        ingredients.set(component.ingredient, ingredient_recipes);
+        return null;
+      })
     )
 
-    ReactDOM.render(<App recipes={recipes} ingredients={Array.from(ingredients)} />, document.getElementById('root'));
+    ReactDOM.render(<App recipes={recipes} ingredients={ingredients} />, document.getElementById('root'));
 })
