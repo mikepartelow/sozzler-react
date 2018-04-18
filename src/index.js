@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 // import {Helmet} from "react-helmet";
 import './index.css';
-import { List } from 'semantic-ui-react';
+import { List, Container, Search, Menu, Divider } from 'semantic-ui-react';
 import 'semantic-ui-css/semantic.min.css';
 
 function Helmet(props) {
@@ -44,7 +44,7 @@ function RecipeDetails(props) {
             <span className="ingredient">{c.ingredient}</span>
           </div>
         )}        
-        <hr />
+        <Divider />
         <div className="text">
           {props.recipe.text}
         </div>
@@ -75,50 +75,16 @@ function RecipeList(props) {
   )
 }
 
-class SearchBar extends React.Component {
-  constructor(props) {
-    super(props);
-    this.handleFilterTextChange = this.handleFilterTextChange.bind(this);
-  }
-  
-  handleFilterTextChange(e) {
-    this.props.onFilterTextChange(e.target.value);
-  }
-  
-  render() {
-    return (
-      <form>
-        <input
-          type="text"
-          placeholder="Search..."
-          value={this.props.filterText}
-          onChange={this.handleFilterTextChange}
-        />
-      </form>
-    );
-  }
-}
-
 class FilteredRecipeList extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      filterText: '',
-    };
-    this.handleFilterTextChange = this.handleFilterTextChange.bind(this);
-  }
+  state = {filterText: ''}
 
-  handleFilterTextChange(filterText) {
-    this.setState({
-      filterText: filterText
-    });
-  }
+  handleFilterTextChange = (e, { value }) => this.setState({filterText: value})
 
   render() {
     return (
       <div>
-        <SearchBar filterText={this.state.filterText} onFilterTextChange={this.handleFilterTextChange} />
-        <RecipeList recipes={this.props.recipes} ingredient={this.props.ingredient} filterText={this.state.filterText} onRecipeSelected={this.props.onRecipeSelected} />
+        <Search input={{ fluid: true }} size={'mini'} open={false} onSearchChange={this.handleFilterTextChange} />
+        <RecipeList recipes={this.props.recipes} filterText={this.state.filterText} onRecipeSelected={this.props.onRecipeSelected} />
       </div>
     )
   }
@@ -141,47 +107,15 @@ function IngredientList(props) {
   )
 }
 
-class MenuBar extends React.Component {
-  constructor(props) {
-    super(props);
-    this.handleRecipes = this.handleRecipes.bind(this);
-    this.handleIngredients = this.handleIngredients.bind(this);
-  }
-
-  handleRecipes() {
-    this.props.onRecipes()
-  }
-
-  handleIngredients() {  
-    this.props.onIngredients()  
-  }
-
-  render() {
-    return (
-      <div>
-        <button onClick={this.handleRecipes}>Recipes</button> |
-        <button onClick={this.handleIngredients}>Ingredients</button>
-      </div>
-    )
-  }
-}
-
 class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      ingredient: null,
-      recipes: null,
-      selectedRecipe: null,
-      ingredientView: false,
-    };
-    this.handleRecipeSelected = this.handleRecipeSelected.bind(this);
-    this.handleRecipes = this.handleRecipes.bind(this);
-    this.handleIngredients = this.handleIngredients.bind(this);
-    this.handleIngredientSelected = this.handleIngredientSelected.bind(this);
+  state = {
+    ingredient: null,
+    recipes: null,
+    selectedRecipe: null,
+    ingredientView: false,
   }
 
-  handleRecipes() {
+  handleRecipes = (e, d) => {
     this.setState({
       ingredient: null,
       recipes: null,
@@ -190,22 +124,15 @@ class App extends React.Component {
     });
   }
 
-  handleIngredients() {
-    this.setState({
-      ingredientView: true,
-    });
-  }
+  handleIngredients = (e, d) => this.setState({ingredientView: true})
 
-  handleRecipeSelected(selectedRecipe) {
-    this.setState({
-      selectedRecipe: selectedRecipe
-    });
-  }
+  handleRecipeSelected = (selectedRecipe) => this.setState({selectedRecipe: selectedRecipe})
 
-  handleIngredientSelected(ingredient, recipes) {
+  handleIngredientSelected = (ingredient, recipes) => {
     this.setState({
       ingredient: ingredient,
       recipes: recipes,
+      selectedRecipe: null,
       ingredientView: false,
     })
   }
@@ -222,13 +149,18 @@ class App extends React.Component {
     }
 
     return (
-      <div>
-        <MenuBar onRecipes={this.handleRecipes} onIngredients={this.handleIngredients} />
+      <Container>
+        <Menu items={[
+          { key: 'recipes', name: 'Recipes', active: !this.state.ingredientView, onClick: this.handleRecipes },
+          { key: 'ingredients', name: 'Ingredients', active: this.state.ingredientView, onClick: this.handleIngredients}
+        ]} />      
         {view}
-      </div>
+      </Container>
     )
   }
 }
+
+// <MenuBar onRecipes={this.handleRecipes} onIngredients={this.handleIngredients} />
 
 // ========================================
 let url = 'https://raw.githubusercontent.com/mikepartelow/sozzler-recipes/master/SozzlerApp/1.0.sozzler';
