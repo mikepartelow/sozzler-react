@@ -72,7 +72,7 @@ function RecipeList(props) {
       {recipes.map(recipe =>
         <List.Item as='a' key={recipe.name} onClick={() => props.onRecipeSelected(recipe)}>
             <List.Content>
-              <List.Header>{recipe.name}</List.Header>
+              <List.Header as='h3'>{recipe.name}</List.Header>
               <List.Header><OliveRating rating={recipe.rating} width="15"/></List.Header>
               <List.Description>
                 {recipe.components.sort((c0, c1) => c0.index > c1.index).map(c => c.ingredient).join(', ')}

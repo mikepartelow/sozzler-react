@@ -5,7 +5,7 @@ docker run --rm --name sozzler -p3000:3000 -v`pwd`/src:/my-app/src -v`pwd`/publi
 
 TODO:
  - <title> :     "react-document-title": "^2.0.3",
-
+ - truncate ingredient lists on RecipeList
  - ratings
    - original png olives
    - alignment
