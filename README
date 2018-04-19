@@ -1,3 +1,14 @@
 docker build -f Dockerfile -t react .
 
-docker run --rm --name sozzler -p3000:3000 -v`pwd`/src:/my-app/src -ti react
+docker run --rm --name sozzler -p3000:3000 -v`pwd`/src:/my-app/src -v`pwd`/public:/my-app/public -ti react
+
+
+TODO:
+ - <title> :     "react-document-title": "^2.0.3",
+
+ - ratings
+   - original png olives
+   - alignment
+ - my-app => sozzler
+ - better looking menu
+
