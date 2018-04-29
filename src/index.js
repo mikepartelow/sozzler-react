@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import { List, Container, Search, Menu, Divider, Image } from 'semantic-ui-react';
+import {Helmet} from "react-helmet";
 import { recipes } from './recipes';
 import 'semantic-ui-css/semantic.min.css';
 import _ from 'lodash';
@@ -31,7 +32,7 @@ function OliveRating(props) {
       ))}
       {_.times(5-props.rating, i => (
         <img key={i} src='./olive-white-1.png' width={props.width} alt=''/>
-      ))}      
+      ))}
     </span>
   )
 }
@@ -39,21 +40,25 @@ function OliveRating(props) {
 function RecipeDetails(props) {
   return (
     <div>
+      <Helmet>
+        <title>Sozzler: {props.recipe.name}</title>
+      </Helmet>
+
       <div className="recipe-details">
         <div className="name">
           <h2>{props.recipe.name}</h2>
           <OliveRating rating={props.recipe.rating} width="25"/>
         </div>
-      
+
         <Divider />
 
-        {props.recipe.components.sort((c0, c1) => c0.index > c1.index).map((c) =>        
+        {props.recipe.components.sort((c0, c1) => c0.index > c1.index).map((c) =>
           <div key={c.index} className="component">
             <span className="quantity">{fancy_quantity(c.quantity)} </span>
             <span className="unit">{c.unit} </span>
             <span className="ingredient">{c.ingredient}</span>
           </div>
-        )}        
+        )}
         <Divider />
         <div className="text">
           {props.recipe.text}
@@ -63,10 +68,10 @@ function RecipeDetails(props) {
   );
 }
 
-function RecipeList(props) {  
+function RecipeList(props) {
   let recipes = props.recipes.sort((a, b) => b.rating - a.rating || a.name.localeCompare(b.name))
                              .filter((recipe) => recipe.name.toLowerCase().includes(props.filterText.toLowerCase()))
-  
+
   return (
     <List divided relaxed>
       {recipes.map(recipe =>
@@ -79,7 +84,7 @@ function RecipeList(props) {
               </List.Description>
             </List.Content>
           </List.Item>
-      )}      
+      )}
     </List>
   )
 }
@@ -92,6 +97,10 @@ class FilteredRecipeList extends React.Component {
   render() {
     return (
       <div>
+        <Helmet>
+          <title>Sozzler: Recipes</title>
+        </Helmet>
+
         <Search input={{ fluid: true }} size={'mini'} open={false} onSearchChange={this.handleFilterTextChange} />
         <RecipeList recipes={this.props.recipes} filterText={this.state.filterText} onRecipeSelected={this.props.onRecipeSelected} />
       </div>
@@ -101,18 +110,24 @@ class FilteredRecipeList extends React.Component {
 
 function IngredientList(props) {
   return (
-    <List divided relaxed>
-      {Array.from(props.ingredients).sort((a, b) => a[0].localeCompare(b[0])).map(([ingredient, recipes]) => {
-        return (
-          <List.Item as='a' key={ingredient} onClick={() => props.onIngredientSelected(ingredient, recipes)}>
-            <List.Content>
-              <List.Header>{ingredient}</List.Header>
-              <List.Description>{recipes.map(r => r.name).sort().join(', ')}</List.Description>
-            </List.Content>
-          </List.Item>
-        )
-      })}
-    </List>
+    <div>
+      <Helmet>
+        <title>Sozzler: Ingredients</title>
+      </Helmet>
+
+      <List divided relaxed>
+        {Array.from(props.ingredients).sort((a, b) => a[0].localeCompare(b[0])).map(([ingredient, recipes]) => {
+          return (
+            <List.Item as='a' key={ingredient} onClick={() => props.onIngredientSelected(ingredient, recipes)}>
+              <List.Content>
+                <List.Header>{ingredient}</List.Header>
+                <List.Description>{recipes.map(r => r.name).sort().join(', ')}</List.Description>
+              </List.Content>
+            </List.Item>
+          )
+        })}
+      </List>
+    </div>
   )
 }
 
@@ -168,7 +183,7 @@ class App extends React.Component {
             <Image src='./Bottles-label-Small@2x.png' width='25'/>
             &nbsp;&nbsp;Ingredients
           </Menu.Item>
-        </Menu>      
+        </Menu>
         {view}
       </Container>
     )

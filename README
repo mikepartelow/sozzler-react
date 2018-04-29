@@ -1,6 +1,6 @@
-docker build -f Dockerfile -t react .
+docker build -f Dockerfile -t sozzler . --no-cache
 
-docker run --rm --name sozzler -p3000:3000 -v`pwd`/src:/my-app/src -v`pwd`/public:/my-app/public -ti react
+docker run --rm --name sozzler -p3003:3000 -v`pwd`/src:/sozzler/src -v`pwd`/public:/sozzler/public -ti sozzler
 
 
 TODO:
