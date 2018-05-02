@@ -1,7 +1,5 @@
 docker build -f Dockerfile -t sozzler . # --no-cache
 
-docker run --rm --name sozzler -p3003:3000 -v`pwd`/src:/sozzler/src -v`pwd`/public:/sozzler/public -ti sozzler
-
 docker run --rm --name sozzler -p3003:3000 -v`pwd`:/sozzler -ti sozzler
 
 TODO:

@@ -9,6 +9,7 @@
     "react-scripts": "1.1.4",
     "semantic-ui-css": "^2.3.1",
     "semantic-ui-react": "^0.79.1",
+    "slug": "^0.9.1",
     "yarn": "^1.6.0"
   },
   "scripts": {
