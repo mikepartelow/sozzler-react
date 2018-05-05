@@ -123,11 +123,11 @@ const Ingredients = (props) => (
 )
 
 const Sozzler = (props) => (
-  <Router>
+  <Router basename="/sozzler">
     <Container>
       <Menu borderless={true} fluid widths={2}>
         <Menu.Item name='Recipes' as={Link} to='/recipes' onClick={this.handleRecipes}>
-          <Image src='./Martini-outline-Small@2x.png' width='25'/>
+          <Image src='/sozzler/Martini-outline-Small@2x.png' width='25'/>
           &nbsp;Recipes
         </Menu.Item>
         <Menu.Item name='Ingredients' as={Link} to='/ingredients' onClick={this.handleIngredients}>
@@ -147,6 +147,9 @@ const Sozzler = (props) => (
 
 // TODO: restore 'active' on menu.item
 // TODO: Helmet: Sozzler: Recipes
+// TODO: default route
+// TODO: images work on dev
+// TODO: on prod urls are like mike.com/recipes
 
 function gitrdone(recipes) {
   var ingredients = new Map()
