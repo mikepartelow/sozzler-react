@@ -31,10 +31,10 @@ function OliveRating(props) {
   return (
     <span>
       {_.times(props.rating, i => (
-        <Image inline key={i} src='/olive-black-1.png' width={props.width} alt={i}/>
+        <Image inline key={i} src='/sozzler/olive-black-1.png' width={props.width} alt={i}/>
       ))}
       {_.times(5-props.rating, i => (
-        <Image inline key={i} src='/olive-white-1.png' width={props.width} alt=''/>
+        <Image inline key={i} src='/sozzler/olive-white-1.png' width={props.width} alt=''/>
       ))}
     </span>
   )
@@ -127,11 +127,11 @@ const Sozzler = (props) => (
     <Container>
       <Menu borderless={true} fluid widths={2}>
         <Menu.Item name='Recipes' as={Link} to='/recipes' onClick={this.handleRecipes}>
-          <Image src='/Martini-outline-Small@2x.png' width='25'/>
+          <Image src='./Martini-outline-Small@2x.png' width='25'/>
           &nbsp;Recipes
         </Menu.Item>
         <Menu.Item name='Ingredients' as={Link} to='/ingredients' onClick={this.handleIngredients}>
-          <Image src='/Bottles-label-Small@2x.png' width='25'/>
+          <Image src='/sozzler/Bottles-label-Small@2x.png' width='25'/>
           &nbsp;&nbsp;Ingredients
         </Menu.Item>
       </Menu>
