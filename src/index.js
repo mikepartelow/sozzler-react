@@ -68,31 +68,37 @@ const Recipe = (props) => (
 )
 
 const iincludes = (a, b) => a.toLowerCase().includes(b.toLowerCase())
+const hasingredient = (r, i) => i ? r.components.some(c => c.ingredient.toLowerCase() === i) : true
 
 class Recipes extends React.Component {
-  state = {filterText: ''}
+  state = { filterText: '', }
   handleFilterTextChange = (e, { value }) => this.setState({filterText: value})
 
-  render = () => (
-    <Container>
-      <Search input={{ fluid: true }} size={'mini'} open={false} onSearchChange={this.handleFilterTextChange} />
-      <List divided relaxed>
-        {this.props.recipes.sort((a, b) => b.rating - a.rating || a.name.localeCompare(b.name))
-                      .filter((recipe) => iincludes(recipe.name, this.state.filterText))
-                      .map((recipe) =>
-          <List.Item as={Link} to={`/recipes/${recipe.slug}`} key={recipe.slug}>
-              <List.Content>
-                <List.Header as='h3'>{recipe.name}</List.Header>
-                <List.Header><OliveRating rating={recipe.rating} width="15"/></List.Header>
-                <List.Description>
-                  {recipe.components.sort((c0, c1) => c0.index > c1.index).map(c => c.ingredient).join(', ')}
-                </List.Description>
-              </List.Content>
-            </List.Item>
-        )}
-      </List>
-    </Container>
-  )
+  render() {
+    let ingredient = decodeURIComponent(this.props.location.search.slice(3).toLowerCase())
+
+    return (
+      <Container>
+        <Search input={{ fluid: true }} size={'mini'} open={false} onSearchChange={this.handleFilterTextChange} />
+        <List divided relaxed>
+          {this.props.recipes.sort((a, b) => b.rating - a.rating || a.name.localeCompare(b.name))
+                        .filter((recipe) => iincludes(recipe.name, this.state.filterText))
+                        .filter(recipe => hasingredient(recipe, ingredient))
+                        .map((recipe) =>
+            <List.Item as={Link} to={`/recipes/${recipe.slug}`} key={recipe.slug}>
+                <List.Content>
+                  <List.Header as='h3'>{recipe.name}</List.Header>
+                  <List.Header><OliveRating rating={recipe.rating} width="15"/></List.Header>
+                  <List.Description>
+                    {recipe.components.sort((c0, c1) => c0.index > c1.index).map(c => c.ingredient).join(', ')}
+                  </List.Description>
+                </List.Content>
+              </List.Item>
+          )}
+        </List>
+      </Container>
+    )
+  }
 }
 
 const Ingredients = (props) => (
@@ -104,7 +110,7 @@ const Ingredients = (props) => (
     <List divided relaxed>
       {Array.from(props.ingredients).sort((a, b) => a[0].localeCompare(b[0])).map(([ingredient, recipes]) => {
         return (
-          <List.Item as='a' key={ingredient}>
+          <List.Item as={Link} to={`/recipes/?i=${ingredient}`} key={ingredient}>
             <List.Content>
               <List.Header>{ingredient}</List.Header>
               <List.Description>{recipes.map(r => r.name).sort().join(', ')}</List.Description>
@@ -131,16 +137,15 @@ const Sozzler = (props) => (
       </Menu>
 
       <Route path='/recipes/:slug' render={(rprops) => (
-        <Recipe recipe={props.recipes.find((r) => r.slug === rprops.match.params.slug)}/>
+        <Recipe recipe ={props.recipes.find((r) => r.slug === rprops.match.params.slug)}/>
       )}/>
-      <Route exact path="/recipes" render={() => <Recipes recipes={props.recipes}/>}/>
-      <Route path="/ingredients" render={() => <Ingredients ingredients={props.ingredients}/>}/>
+      <Route exact path="/recipes" render={(rprops) => <Recipes {...rprops} recipes={props.recipes}/>}/>
+      <Route path="/ingredients" render={(rprops) => <Ingredients {...rprops} ingredients={props.ingredients}/>}/>
     </Container>
   </Router>
 )
 
 // TODO: restore 'active' on menu.item
-// TODO: ingredients page works
 // TODO: Helmet: Sozzler: Recipes
 
 function gitrdone(recipes) {
