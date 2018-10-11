@@ -1,5 +1,5 @@
 module.exports = {
- recipes: 
+ recipes:
  [
     {
       "rating" : 5,
@@ -1428,6 +1428,39 @@ module.exports = {
       ],
       "name" : "Blood and Sand",
       "text" : "Shake with ice, strain into chilled cocktail glass. Garnish with flamed orange peel.\n\nGreat with Yamazaki Scotch, Dolin vermouth. Try a more assertive Scotch to toss it just a little out of balance.\n\nPairs well with dark chocolate."
-    }
+    },
+    {
+      "rating" : 4,
+      "components" : [
+        {
+          "quantity" : "3/4",
+          "ingredient" : "Gin",
+          "unit" : "oz",
+          "index" : 1
+        },
+
+        {
+          "quantity" : "3/4",
+          "ingredient" : "Green Chartreuse",
+          "unit" : "oz",
+          "index" : 1
+        },
+        {
+          "quantity" : "3/4",
+          "ingredient" : "Maraschino Liqueur",
+          "unit" : "tsp",
+          "index" : 5
+        },
+        {
+          "quantity" : "3/4",
+          "ingredient" : "Lime Juice",
+          "unit" : "oz",
+          "index" : 3
+        },
+      ],
+      "name" : "Last Word",
+      "text" : "Shake with ice, serve in chilled cocktail glass. Garnish artistically."
+    },
+
   ]
 }
